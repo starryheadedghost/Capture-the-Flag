@@ -17,9 +17,8 @@ public class PlayerController : MonoBehaviour
     public float minLookX;              //highest we can look up
     private float rotX;                 //current x rotation
 
-    private Camera camera;      //reference camera
+    private Camera camcam;     //reference camera
     private Rigidbody rb;       //player rigidbody
-    //private Weapon weapon;      //weapon reference
 
     void Awake()
     {
@@ -29,7 +28,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        camera = Camera.main;
+        camcam = Camera.main;
         rb = GetComponent<Rigidbody>();
     }
 
@@ -51,7 +50,7 @@ public class PlayerController : MonoBehaviour
         rotX += Input.GetAxis("Mouse Y") - lookSensitivity;
 
         rotX = Mathf.Clamp(rotX, minLookX, maxLookX);
-        camera.transform.localRotation = Quaternion.Euler(-rotX, 0, 0);
+        camcam.transform.localRotation = Quaternion.Euler(-rotX, 0, 0);
         transform.eulerAngles += Vector3.up * y;
     }
 
@@ -65,9 +64,39 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void TakeDamage(int damage)
+    {
+        curHp -= damage;
+
+        if(curHp <=0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        Debug.Log("rip");
+        Time.timeScale = 0;
+    }
+    public void GiveHealth(int amountToGive)
+    {
+        Debug.Log("healed");
+    }
+    public void GiveAmmo(int amountToGive)
+    {
+        Debug.Log(">:)");
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+        Move();
+        CamLook();
+
+        if(Input.GetButtonDown("Jump"))
+        {
+            Jump();
+        }
     }
 }
